@@ -26,16 +26,18 @@ export class UserController {
   deleteUser(@Param('userId', UserByIdPipe) userId: string) {
     return this.userService.deleteUser(userId);
   }
+
   @Get('/:userId')
   async getUser(@Param('userId', UserByIdPipe) userId: string) {
     const user = await this.userService.findUser(userId);
     return this.userMapper.getUser(user);
   }
+
   @UseGuards(JWTGuard, AccessGuard)
   @Patch('/:userId')
   updateUser(
     @Param('userId', UserByIdPipe) userId: string,
-    @Body() body: UpdateUserDTO,
+    @Body() body: UpdateUserDTO
   ) {
     return this.userService.updateUser(userId, body);
   }

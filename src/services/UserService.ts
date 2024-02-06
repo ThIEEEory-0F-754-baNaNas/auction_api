@@ -9,9 +9,11 @@ export class UserService {
   deleteUser(userId: string) {
     return this.userRepository.deleteById(userId);
   }
+
   findUser(userId: string) {
     return this.userRepository.findById(userId);
   }
+
   updateUser(userId: string, body: UpdateUserDTO) {
     return this.userRepository.updateById(userId, body);
   }

@@ -12,11 +12,13 @@ export class AuthController {
   signup(@Body() body: CreateUserDTO) {
     return this.authService.createUser(body);
   }
+
   @UseGuards(LocalGuard)
   @Post('/signin')
   signin(@Req() req) {
-    return this.authService.getAccessToken(req.user.id);
+    return { token: this.authService.getAccessToken(req.user.id) };
   }
+
   @UseGuards(JWTGuard)
   @Get('/whoami')
   whoami(@Req() req) {

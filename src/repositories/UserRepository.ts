@@ -9,18 +9,22 @@ export class UserRepository {
   create(data: Prisma.UserUncheckedCreateInput): Promise<User> {
     return this.prismaService.user.create({ data });
   }
+
   find(where: Prisma.UserWhereInput) {
     return this.prismaService.user.findFirst({ where });
   }
+
   findById(id: string) {
     return this.prismaService.user.findUnique({
       where: { id },
       include: { auctionItems: true, auctionStakes: true, messages: true },
     });
   }
+
   updateById(id: string, data: Prisma.UserUncheckedUpdateInput) {
     return this.prismaService.user.update({ where: { id }, data });
   }
+
   deleteById(id: string) {
     return this.prismaService.user.delete({ where: { id } });
   }

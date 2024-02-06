@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async createUser(body: CreateUserDTO) {
@@ -37,16 +37,12 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.userRepository.find({ email });
     if (!user) {
-      throw new UnauthorizedException(
-        'User with such email or password does not exist',
-      );
+      throw new UnauthorizedException('Email or password is incorrect');
     }
 
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) {
-      throw new UnauthorizedException(
-        'User with such email or password does not exist',
-      );
+      throw new UnauthorizedException('Email or password is incorrect');
     }
 
     delete user.password;

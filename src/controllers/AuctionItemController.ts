@@ -15,7 +15,7 @@ import { AuctionItemService } from '../services/AuctionItemService';
 import { AuctionByIdPipe } from '../pipes/AuctionByIdPipe';
 import { UpdateAuctionItemDTO } from '../dtos/UpdateAuctionItemDTO';
 
-@Controller('auctionItems')
+@Controller('/auctionItems')
 export class AuctionItemController {
   constructor(private auctionItemService: AuctionItemService) {}
 
@@ -35,7 +35,7 @@ export class AuctionItemController {
   @Patch('/:auctionId')
   async update(
     @Param('auctionId', AuctionByIdPipe) auctionId: string,
-    @Body() body: UpdateAuctionItemDTO
+    @Body() body: UpdateAuctionItemDTO,
   ) {
     return this.auctionItemService.update(auctionId, body);
   }

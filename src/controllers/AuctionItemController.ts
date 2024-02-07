@@ -14,32 +14,73 @@ import { JWTGuard } from '../guards/JWTGuard';
 import { AuctionItemService } from '../services/AuctionItemService';
 import { AuctionByIdPipe } from '../pipes/AuctionByIdPipe';
 import { UpdateAuctionItemDTO } from '../dtos/UpdateAuctionItemDTO';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuctionItemResponse } from '../responses/AuctionItemResponse';
 
+@ApiTags('AuctionItem')
 @Controller('/auctionItems')
 export class AuctionItemController {
   constructor(private auctionItemService: AuctionItemService) {}
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create auction',
+  })
+  @ApiOkResponse({
+    type: AuctionItemResponse,
+  })
   @UseGuards(JWTGuard)
   @Post()
-  async create(@Body() body: CreateAuctionItemDTO, @Req() req) {
+  async create(
+    @Body() body: CreateAuctionItemDTO,
+    @Req() req,
+  ): Promise<AuctionItemResponse> {
     return this.auctionItemService.create(body, req.user.id);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get auction by id',
+  })
+  @ApiOkResponse({
+    type: AuctionItemResponse,
+  })
   @UseGuards(JWTGuard)
   @Get('/:auctionId')
-  async get(@Param('auctionId', AuctionByIdPipe) auctionId: string) {
+  async get(
+    @Param('auctionId', AuctionByIdPipe) auctionId: string,
+  ): Promise<AuctionItemResponse> {
     return this.auctionItemService.getById(auctionId);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update auction',
+  })
+  @ApiOkResponse({
+    type: AuctionItemResponse,
+  })
   @UseGuards(JWTGuard)
   @Patch('/:auctionId')
   async update(
     @Param('auctionId', AuctionByIdPipe) auctionId: string,
     @Body() body: UpdateAuctionItemDTO,
-  ) {
+  ): Promise<AuctionItemResponse> {
     return this.auctionItemService.update(auctionId, body);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Delete auction by id',
+  })
+  @ApiOkResponse({
+    type: AuctionItemResponse,
+  })
   @UseGuards(JWTGuard)
   @Delete('/:auctionId')
   async delete(@Param('auctionId', AuctionByIdPipe) auctionId: string) {

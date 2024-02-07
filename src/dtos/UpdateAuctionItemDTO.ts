@@ -1,21 +1,24 @@
-import { IsArray, IsDate, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsDate, IsString, IsUrl } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateAuctionItemDTO {
-  @IsOptional()
+  @ApiPropertyOptional()
   @IsString()
   title?: string;
 
-  @IsOptional()
+  @ApiPropertyOptional()
   @IsString()
   description?: string;
 
-  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'Array of images to add',
+  })
   @IsArray()
   @IsUrl({}, { each: true })
   images?: string[];
 
-  @IsOptional()
+  @ApiPropertyOptional()
   @Type(() => Date)
   @IsDate()
   endTime?: Date;

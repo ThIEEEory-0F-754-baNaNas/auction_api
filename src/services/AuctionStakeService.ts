@@ -1,15 +1,37 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AuctionStakeRepository } from '../repositories/AuctionStakeRepository';
 import { CreateAuctionStakeDto } from '../dtos/CreateAuctionStakeDto';
+import { UserRepository } from '../repositories/UserRepository';
+import { AuctionItemRepository } from '../repositories/AuctionItemRepository';
 
 @Injectable()
 export class AuctionStakeService {
-  constructor(private auctionStakeRepository: AuctionStakeRepository) {}
+  constructor(
+    private auctionStakeRepository: AuctionStakeRepository,
+    private userRepository: UserRepository,
+    private auctionItemRepository: AuctionItemRepository,
+  ) {}
 
   async create(data: CreateAuctionStakeDto, userId: string) {
-    if (!(await this.isPriceBiggest(data.price))) {
+    if (!(await this.isBiggestPriceStake(data.price, data.auctionId))) {
       throw new BadRequestException('Larger price exists');
     }
+
+    const auction = await this.auctionItemRepository.findById(data.auctionId);
+
+    if (auction.startPrice >= data.price) {
+      throw new BadRequestException('Invalid price or auction');
+    }
+
+    const user = await this.userRepository.findById(userId);
+
+    if (Number(user.balance) - data.price < 0) {
+      throw new BadRequestException('Not enough credits on balance');
+    }
+
+    await this.userRepository.updateById(userId, {
+      balance: Number(user.balance) - data.price,
+    });
 
     return this.auctionStakeRepository.create({
       auctionItemId: data.auctionId,
@@ -18,13 +40,16 @@ export class AuctionStakeService {
     });
   }
 
-  async isPriceBiggest(stakePrice: number) {
+  async isBiggestPriceStake(price: number, auctionItemId: string) {
     const stake = await this.auctionStakeRepository.findFirst({
+      where: {
+        auctionItemId,
+      },
       orderBy: {
         price: 'desc',
       },
     });
 
-    return !stake?.price ? true : stakePrice > stake?.price;
+    return !stake?.price ? true : price > stake?.price;
   }
 }

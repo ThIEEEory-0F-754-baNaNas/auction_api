@@ -7,6 +7,7 @@ export class DbUser {
   lastname: string;
   username: string;
   email: string;
+  balance: bigint;
   password: string;
   auctionStakes: AuctionStake[];
   auctionItems: AuctionItem[];

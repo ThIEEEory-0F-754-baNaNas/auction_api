@@ -17,11 +17,15 @@ export class UserRepository {
   findById(id: string) {
     return this.prismaService.user.findUnique({
       where: { id },
-      include: { auctionItems: true, auctionStakes: true, messages: true },
+      include: {
+        auctionItems: true,
+        auctionStakes: true,
+        messages: true,
+      },
     });
   }
 
-  updateById(id: string, data: Prisma.UserUncheckedUpdateInput) {
+  async updateById(id: string, data: Prisma.UserUncheckedUpdateInput) {
     return this.prismaService.user.update({ where: { id }, data });
   }
 

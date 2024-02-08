@@ -5,6 +5,8 @@ import {
   Get,
   Param,
   Patch,
+  Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services/UserService';
@@ -20,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserResponse } from '../responses/UserResponse';
+import { UserDepositDto } from '../dtos/UserDepositDto';
 
 @ApiTags('User')
 @Controller('/user')
@@ -73,5 +76,18 @@ export class UserController {
     @Body() body: UpdateUserDTO,
   ): Promise<UserResponse> {
     return this.userService.updateUser(userId, body);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Deposit to users balance',
+  })
+  @ApiOkResponse({
+    type: UserResponse,
+  })
+  @UseGuards(JWTGuard)
+  @Post('/deposit')
+  async deposit(@Body() body: UserDepositDto, @Req() req) {
+    return this.userService.deposit(body, req.user);
   }
 }

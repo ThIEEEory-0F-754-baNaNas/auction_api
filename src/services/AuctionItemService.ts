@@ -3,6 +3,11 @@ import { AuctionItemRepository } from '../repositories/AuctionItemRepository';
 import { CreateAuctionItemDTO } from '../dtos/CreateAuctionItemDTO';
 import { UpdateAuctionItemDTO } from '../dtos/UpdateAuctionItemDTO';
 import { ChatRepository } from '../repositories/ChatRepository';
+import { SortDTO } from '../dtos/QueryAllDTO';
+import {
+  QueryAllAuctionItemsDTO,
+  SortQAAIParam,
+} from '../dtos/QueryAllAuctionItemsDTO';
 
 @Injectable()
 export class AuctionItemService {
@@ -10,6 +15,43 @@ export class AuctionItemService {
     private readonly auctionItemRepository: AuctionItemRepository,
     private readonly chatRepository: ChatRepository,
   ) {}
+
+  getAll(query: QueryAllAuctionItemsDTO) {
+    const where = query?.search
+      ? {
+          where: {
+            title: {
+              contains: query.search,
+            },
+          },
+        }
+      : {};
+
+    const pagination =
+      query.page && query.pageSize
+        ? {
+            skip: query.page * query.pageSize,
+            take: +query.pageSize,
+          }
+        : {};
+
+    const sort =
+      query.sort === SortQAAIParam.AUCTION_STAKES
+        ? {
+            orderBy: {
+              auctionStakes: {
+                _count: query?.order || 'asc',
+              },
+            },
+          }
+        : this.getSort(query, SortQAAIParam.END_TIME);
+
+    return this.auctionItemRepository.findMany({
+      ...pagination,
+      ...sort,
+      ...where,
+    });
+  }
 
   async create(data: CreateAuctionItemDTO, userId: string) {
     const endTime = new Date(data.endTime);
@@ -48,5 +90,19 @@ export class AuctionItemService {
 
   delete(id: string) {
     return this.auctionItemRepository.delete(id);
+  }
+
+  getSort({ sort, order = 'asc' }: SortDTO, standardField: string) {
+    if (!sort)
+      return {
+        orderBy: {
+          [standardField]: order,
+        },
+      };
+    return {
+      orderBy: {
+        [sort]: order,
+      },
+    };
   }
 }

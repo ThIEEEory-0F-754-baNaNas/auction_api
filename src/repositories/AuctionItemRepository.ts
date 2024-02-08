@@ -6,6 +6,10 @@ import { PrismaService } from '../services/PrismaService';
 export class AuctionItemRepository {
   constructor(private prismaService: PrismaService) {}
 
+  async findMany(args: Prisma.AuctionItemFindManyArgs) {
+    return this.prismaService.auctionItem.findMany(args);
+  }
+
   async create(data: Prisma.AuctionItemUncheckedCreateInput) {
     return this.prismaService.auctionItem.create({ data });
   }

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -21,11 +22,23 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuctionItemResponse } from '../responses/AuctionItemResponse';
+import { QueryAllAuctionItemsDTO } from '../dtos/QueryAllAuctionItemsDTO';
 
 @ApiTags('AuctionItem')
 @Controller('/auctionItems')
 export class AuctionItemController {
   constructor(private auctionItemService: AuctionItemService) {}
+
+  @ApiOperation({
+    summary: 'Get all auctions',
+  })
+  @ApiOkResponse({
+    type: [AuctionItemResponse],
+  })
+  @Get()
+  async getAll(@Query() query: QueryAllAuctionItemsDTO) {
+    return this.auctionItemService.getAll(query);
+  }
 
   @ApiBearerAuth()
   @ApiOperation({

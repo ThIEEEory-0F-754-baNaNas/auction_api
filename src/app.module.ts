@@ -15,7 +15,10 @@ import { AuctionStakeModule } from './modules/AuctionStakeModule';
     AuctionItemModule,
     ChatModule,
     AuctionStakeModule,
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.development.env' }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.development.env', '.env'],
+    }),
   ],
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -10,6 +11,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateUserDTO {
   @ApiPropertyOptional()
   @IsString()
+  @IsOptional()
   avatar?: string;
 
   @ApiProperty()

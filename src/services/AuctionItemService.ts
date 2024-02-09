@@ -12,6 +12,7 @@ import { FileService } from '../utils/files/FileService';
 import { RemoveImagesDTO } from '../dtos/RemoveImagesDTO';
 
 const MAX_IMAGES_FOR_ITEM = 6;
+const MIN_TIME_INTERVAL = 20;
 
 @Injectable()
 export class AuctionItemService {
@@ -63,10 +64,20 @@ export class AuctionItemService {
     userId: string,
     photos: Array<Express.Multer.File>,
   ) {
+    const startTime = new Date(data.startTime);
     const endTime = new Date(data.endTime);
 
     if (endTime.getTime() < Date.now()) {
-      throw new BadRequestException('Wrong date provided');
+      throw new BadRequestException('Wrong end date provided');
+    }
+
+    const differenceTimeMinutes =
+      (endTime.getTime() - startTime.getTime()) / (1000 * 60);
+
+    if (differenceTimeMinutes < MIN_TIME_INTERVAL) {
+      throw new BadRequestException(
+        `Minimum interval between dates is ${MIN_TIME_INTERVAL} minutes`,
+      );
     }
 
     const images = [];
@@ -78,8 +89,9 @@ export class AuctionItemService {
     const auction = await this.auctionItemRepository.create({
       ...data,
       images,
+      startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
-      userId: userId,
+      user: { connect: { id: userId } },
     });
 
     const chat = await this.chatRepository.create({

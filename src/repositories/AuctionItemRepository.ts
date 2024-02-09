@@ -19,7 +19,7 @@ export class AuctionItemRepository {
     return this.prismaService.auctionItem.findMany(args);
   }
 
-  async create(data: Prisma.AuctionItemUncheckedCreateInput) {
+  async create(data: Prisma.AuctionItemCreateInput) {
     return this.prismaService.auctionItem.create({ data });
   }
 

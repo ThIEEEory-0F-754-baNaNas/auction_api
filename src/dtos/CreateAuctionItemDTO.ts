@@ -27,5 +27,11 @@ export class CreateAuctionItemDTO {
   @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
+  startTime: Date;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Type(() => Date)
+  @IsDate()
   endTime: Date;
 }

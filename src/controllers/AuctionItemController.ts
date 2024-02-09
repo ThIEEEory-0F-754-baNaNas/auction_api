@@ -23,16 +23,23 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuctionItemResponse } from '../responses/AuctionItemResponse';
+import {
+  AuctionItemResponse,
+  FullAuctionItemResponse,
+} from '../responses/AuctionItemResponse';
 import { QueryAllAuctionItemsDTO } from '../dtos/QueryAllAuctionItemsDTO';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageFileArrayPipe } from '../pipes/ImageFileArrayPipe';
 import { RemoveImagesDTO } from '../dtos/RemoveImagesDTO';
+import { AuctionItemMapper } from '../mappers/AuctionItemMapper';
 
 @ApiTags('AuctionItem')
 @Controller('/auctionItems')
 export class AuctionItemController {
-  constructor(private auctionItemService: AuctionItemService) {}
+  constructor(
+    private readonly auctionItemService: AuctionItemService,
+    private readonly auctionItemMapper: AuctionItemMapper,
+  ) {}
 
   @ApiOperation({
     summary: 'Get all auctions',
@@ -74,8 +81,9 @@ export class AuctionItemController {
   @Get('/:auctionId')
   async get(
     @Param('auctionId', AuctionByIdPipe) auctionId: string,
-  ): Promise<AuctionItemResponse> {
-    return this.auctionItemService.getById(auctionId);
+  ): Promise<FullAuctionItemResponse> {
+    const auction = await this.auctionItemService.getById(auctionId);
+    return this.auctionItemMapper.getAuctionItem(auction);
   }
 
   @ApiBearerAuth()

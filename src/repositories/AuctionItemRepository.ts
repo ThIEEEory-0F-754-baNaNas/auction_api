@@ -6,6 +6,15 @@ import { PrismaService } from '../services/PrismaService';
 export class AuctionItemRepository {
   constructor(private prismaService: PrismaService) {}
 
+  private include = {
+    auctionStakes: true,
+    chat: {
+      include: {
+        messages: true,
+      },
+    },
+  };
+
   async findMany(args: Prisma.AuctionItemFindManyArgs) {
     return this.prismaService.auctionItem.findMany(args);
   }
@@ -19,6 +28,7 @@ export class AuctionItemRepository {
       where: {
         id,
       },
+      include: this.include,
     });
   }
 

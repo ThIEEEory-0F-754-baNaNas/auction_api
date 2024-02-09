@@ -8,12 +8,17 @@ import {
   QueryAllAuctionItemsDTO,
   SortQAAIParam,
 } from '../dtos/QueryAllAuctionItemsDTO';
+import { FileService } from '../utils/files/FileService';
+import { RemoveImagesDTO } from '../dtos/RemoveImagesDTO';
+
+const MAX_IMAGES_FOR_ITEM = 6;
 
 @Injectable()
 export class AuctionItemService {
   constructor(
     private readonly auctionItemRepository: AuctionItemRepository,
     private readonly chatRepository: ChatRepository,
+    private readonly fileService: FileService,
   ) {}
 
   getAll(query: QueryAllAuctionItemsDTO) {
@@ -53,15 +58,26 @@ export class AuctionItemService {
     });
   }
 
-  async create(data: CreateAuctionItemDTO, userId: string) {
+  async create(
+    data: CreateAuctionItemDTO,
+    userId: string,
+    photos: Array<Express.Multer.File>,
+  ) {
     const endTime = new Date(data.endTime);
 
     if (endTime.getTime() < Date.now()) {
       throw new BadRequestException('Wrong date provided');
     }
 
+    const images = [];
+    for (const photo of photos) {
+      const path = await this.fileService.saveByHash(photo, 'images');
+      images.push(path);
+    }
+
     const auction = await this.auctionItemRepository.create({
       ...data,
+      images,
       endTime: endTime.toISOString(),
       userId: userId,
     });
@@ -79,13 +95,42 @@ export class AuctionItemService {
     return this.auctionItemRepository.findById(auctionId);
   }
 
-  update(id: string, data: UpdateAuctionItemDTO) {
+  async update(
+    id: string,
+    data: UpdateAuctionItemDTO,
+    photos: Array<Express.Multer.File>,
+  ) {
+    const { images } = await this.auctionItemRepository.findById(id);
+    if (images.length + photos.length > MAX_IMAGES_FOR_ITEM) {
+      throw new BadRequestException('Excessive amount of images per item');
+    }
+
+    for (const photo of photos) {
+      const path = await this.fileService.saveByHash(photo, 'images');
+      images.push(path);
+    }
+
     return this.auctionItemRepository.update(id, {
       ...data,
-      images: {
-        push: data.images,
-      },
+      images,
     });
+  }
+
+  async removeImages(id: string, { photos }: RemoveImagesDTO) {
+    const { images } = await this.auctionItemRepository.findById(id);
+
+    if (photos.some((photo) => !images.includes(photo))) {
+      throw new BadRequestException('Some images do not belong to this item');
+    }
+
+    for (const photo of photos) {
+      images.splice(images.indexOf(photo), 1);
+      if (this.fileService.checkFileExist(photo)) {
+        await this.fileService.deleteFile(photo);
+      }
+    }
+
+    return this.auctionItemRepository.update(id, { images });
   }
 
   delete(id: string) {

@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateAuctionItemDTO } from '../dtos/CreateAuctionItemDTO';
 import { JWTGuard } from '../guards/JWTGuard';
@@ -23,6 +25,9 @@ import {
 } from '@nestjs/swagger';
 import { AuctionItemResponse } from '../responses/AuctionItemResponse';
 import { QueryAllAuctionItemsDTO } from '../dtos/QueryAllAuctionItemsDTO';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ImageFileArrayPipe } from '../pipes/ImageFileArrayPipe';
+import { RemoveImagesDTO } from '../dtos/RemoveImagesDTO';
 
 @ApiTags('AuctionItem')
 @Controller('/auctionItems')
@@ -48,12 +53,14 @@ export class AuctionItemController {
     type: AuctionItemResponse,
   })
   @UseGuards(JWTGuard)
+  @UseInterceptors(FilesInterceptor('photos', 6))
   @Post()
   async create(
     @Body() body: CreateAuctionItemDTO,
     @Req() req,
+    @UploadedFiles(ImageFileArrayPipe) photos: Array<Express.Multer.File>,
   ): Promise<AuctionItemResponse> {
-    return this.auctionItemService.create(body, req.user.id);
+    return this.auctionItemService.create(body, req.user.id, photos);
   }
 
   @ApiBearerAuth()
@@ -73,18 +80,36 @@ export class AuctionItemController {
 
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Update auction',
+    summary: 'Update auction and add images',
   })
   @ApiOkResponse({
     type: AuctionItemResponse,
   })
   @UseGuards(JWTGuard)
+  @UseInterceptors(FilesInterceptor('photos', 6))
   @Patch('/:auctionId')
   async update(
     @Param('auctionId', AuctionByIdPipe) auctionId: string,
     @Body() body: UpdateAuctionItemDTO,
+    @UploadedFiles(ImageFileArrayPipe) photos: Array<Express.Multer.File>,
   ): Promise<AuctionItemResponse> {
-    return this.auctionItemService.update(auctionId, body);
+    return this.auctionItemService.update(auctionId, body, photos);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Remove images from auction',
+  })
+  @ApiOkResponse({
+    type: AuctionItemResponse,
+  })
+  @UseGuards(JWTGuard)
+  @Patch('/:auctionId/images')
+  async removePhotos(
+    @Param('auctionId', AuctionByIdPipe) auctionId: string,
+    @Body() body: RemoveImagesDTO,
+  ): Promise<AuctionItemResponse> {
+    return this.auctionItemService.removeImages(auctionId, body);
   }
 
   @ApiBearerAuth()

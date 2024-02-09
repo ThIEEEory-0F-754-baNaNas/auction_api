@@ -1,11 +1,9 @@
 import {
-  IsArray,
   IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -19,12 +17,6 @@ export class CreateAuctionItemDTO {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsArray()
-  @IsUrl({}, { each: true })
-  images: string[];
 
   @ApiProperty()
   @IsNotEmpty()

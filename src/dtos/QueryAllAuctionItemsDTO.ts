@@ -1,6 +1,6 @@
 import { QueryAllDTO } from './QueryAllDTO';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsBooleanString, IsOptional, IsString } from 'class-validator';
 
 export enum SortQAAIParam {
   START_PRICE = 'startPrice',
@@ -20,4 +20,12 @@ export class QueryAllAuctionItemsDTO extends QueryAllDTO {
   })
   @IsString()
   search?: string;
+
+  @ApiPropertyOptional({
+    description: 'Get only active auctions',
+    default: false,
+  })
+  @IsOptional()
+  @IsBooleanString()
+  active?: string;
 }

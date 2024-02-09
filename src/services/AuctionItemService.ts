@@ -22,16 +22,26 @@ export class AuctionItemService {
     private readonly fileService: FileService,
   ) {}
 
-  getAll(query: QueryAllAuctionItemsDTO) {
-    const where = query?.search
-      ? {
-          where: {
+  async getAll(query: QueryAllAuctionItemsDTO) {
+    const AND = [
+      query?.active === 'true'
+        ? {
+            endTime: {
+              gt: new Date(Date.now()).toISOString(),
+            },
+            startTime: {
+              lt: new Date(Date.now()).toISOString(),
+            },
+          }
+        : {},
+      query?.search
+        ? {
             title: {
               contains: query.search,
             },
-          },
-        }
-      : {};
+          }
+        : {},
+    ];
 
     const pagination =
       query.page && query.pageSize
@@ -53,9 +63,11 @@ export class AuctionItemService {
         : this.getSort(query, SortQAAIParam.END_TIME);
 
     return this.auctionItemRepository.findMany({
+      where: {
+        AND,
+      },
       ...pagination,
       ...sort,
-      ...where,
     });
   }
 
@@ -67,7 +79,7 @@ export class AuctionItemService {
     const startTime = new Date(data.startTime);
     const endTime = new Date(data.endTime);
 
-    if (endTime.getTime() < Date.now()) {
+    if (endTime.getTime() < Date.now() || startTime.getTime() < Date.now()) {
       throw new BadRequestException('Wrong end date provided');
     }
 

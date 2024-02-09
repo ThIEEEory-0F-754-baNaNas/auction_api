@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Req, UseGuards, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  Get,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { CreateUserDTO } from '../dtos/CreateUserDTO';
 import { AuthService } from '../services/AuthService';
 import { LocalGuard } from '../guards/LocalGuard';
@@ -11,6 +20,8 @@ import {
 } from '@nestjs/swagger';
 import { AuthLoginResponse } from '../responses/AuthLoginResponse';
 import { AuthSignupResponse } from '../responses/AuthSignupResponse';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageFilePipe } from '../pipes/ImageFilePipe';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -25,9 +36,13 @@ export class AuthController {
     type: AuthSignupResponse,
   })
   @ApiOkResponse()
+  @UseInterceptors(FileInterceptor('avatarFile'))
   @Post('/signup')
-  signup(@Body() body: CreateUserDTO): Promise<AuthSignupResponse> {
-    return this.authService.createUser(body);
+  signup(
+    @Body() body: CreateUserDTO,
+    @UploadedFile(ImageFilePipe) avatarFile: Express.Multer.File,
+  ): Promise<AuthSignupResponse> {
+    return this.authService.createUser(body, avatarFile);
   }
 
   @ApiBearerAuth()

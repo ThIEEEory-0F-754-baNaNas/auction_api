@@ -1,19 +1,13 @@
 import {
   IsEmail,
   IsNotEmpty,
-  IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDTO {
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  avatar?: string;
-
   @ApiProperty()
   @MinLength(4)
   @MaxLength(20)

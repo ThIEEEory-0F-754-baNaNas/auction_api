@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaModule } from './PrismaModule';
 import { LocalStrategy } from '../Access/LocalStrategy';
 import { JwtStrategy } from '../Access/JWTStrategy';
+import { FileModule } from '../utils/files/FileModule';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],
@@ -15,6 +16,7 @@ import { JwtStrategy } from '../Access/JWTStrategy';
     PrismaModule,
     PassportModule,
     ConfigModule,
+    FileModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

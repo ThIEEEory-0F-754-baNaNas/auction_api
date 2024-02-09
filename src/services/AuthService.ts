@@ -4,15 +4,17 @@ import { CreateUserDTO } from '../dtos/CreateUserDTO';
 import { UserAlreadyRegisteredException } from '../exceptions/UserAlreadyRegisteredException';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { FileService } from '../utils/files/FileService';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly fileService: FileService,
   ) {}
 
-  async createUser(body: CreateUserDTO) {
+  async createUser(body: CreateUserDTO, avatarFile: Express.Multer.File) {
     const { password, ...securityUser } = body;
     const user = await this.userRepository.find({
       OR: [{ email: body.email }, { username: body.username }],
@@ -25,11 +27,11 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const finalAvatar = body.avatar || 'https://imgur.com/fP2v3JT.png';
+    const avatar = await this.fileService.saveByHash(avatarFile, 'avatars');
 
     return this.userRepository.create({
       password: hashedPassword,
-      avatar: finalAvatar,
+      avatar,
       ...securityUser,
     });
   }

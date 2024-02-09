@@ -6,9 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+  Req, UploadedFile,
+  UseGuards, UseInterceptors
+} from "@nestjs/common";
 import { UserService } from '../services/UserService';
 import { UserByIdPipe } from '../pipes/UserByIdPipe';
 import { UpdateUserDTO } from '../dtos/UpdateUserDTO';
@@ -23,6 +23,8 @@ import {
 } from '@nestjs/swagger';
 import { UserResponse } from '../responses/UserResponse';
 import { UserDepositDto } from '../dtos/UserDepositDto';
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ImageFilePipe } from "../pipes/ImageFilePipe";
 
 @ApiTags('User')
 @Controller('/user')
@@ -76,6 +78,23 @@ export class UserController {
     @Body() body: UpdateUserDTO,
   ): Promise<UserResponse> {
     return this.userService.updateUser(userId, body);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update user`s avatar',
+  })
+  @ApiOkResponse({
+    type: UserResponse,
+  })
+  @UseGuards(JWTGuard, AccessGuard)
+  @UseInterceptors(FileInterceptor('avatarFile'))
+  @Patch('/:userId')
+  async updateAvatar(
+    @Param('userId', UserByIdPipe) userId: string,
+    @UploadedFile(ImageFilePipe) avatarFile: Express.Multer.File,
+  ): Promise<UserResponse> {
+    return this.userService.updateAvatar(userId, avatarFile);
   }
 
   @ApiBearerAuth()

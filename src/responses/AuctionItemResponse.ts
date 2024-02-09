@@ -18,7 +18,13 @@ export class AuctionItemResponse {
   startPrice: bigint;
 
   @ApiProperty()
+  minPriceStep: bigint;
+
+  @ApiProperty()
   createdAt: Date;
+
+  @ApiProperty()
+  startTime: Date;
 
   @ApiProperty()
   endTime: Date;

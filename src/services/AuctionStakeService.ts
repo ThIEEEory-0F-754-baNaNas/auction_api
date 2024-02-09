@@ -18,9 +18,15 @@ export class AuctionStakeService {
     }
 
     const auction = await this.auctionItemRepository.findById(data.auctionId);
+    const biggestStake = await this.getBiggestStake(auction.id);
 
-    if (auction.startPrice >= data.price) {
-      throw new BadRequestException('Invalid price or auction');
+    if (
+      !biggestStake &&
+      data.price - Number(auction.startPrice) < auction.minPriceStep
+    ) {
+      throw new BadRequestException(
+        `Min price for this auction is ${auction.startPrice + auction.minPriceStep}`,
+      );
     }
 
     const user = await this.userRepository.findById(userId);
@@ -41,7 +47,13 @@ export class AuctionStakeService {
   }
 
   async isBiggestPriceStake(price: number, auctionItemId: string) {
-    const stake = await this.auctionStakeRepository.findFirst({
+    const stake = await this.getBiggestStake(auctionItemId);
+
+    return !stake?.price ? true : price > stake?.price;
+  }
+
+  getBiggestStake(auctionItemId: string) {
+    return this.auctionStakeRepository.findFirst({
       where: {
         auctionItemId,
       },
@@ -49,7 +61,5 @@ export class AuctionStakeService {
         price: 'desc',
       },
     });
-
-    return !stake?.price ? true : price > stake?.price;
   }
 }

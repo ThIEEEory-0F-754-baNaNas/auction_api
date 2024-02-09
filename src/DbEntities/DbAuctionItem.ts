@@ -6,7 +6,9 @@ export class DbAuctionItem {
   description?: string;
   images?: string[];
   startPrice: bigint;
+  minPriceStep: bigint;
   createdAt: Date;
+  startTime: Date;
   endTime: Date;
   auctionStakes?: AuctionStake[];
   userId: string;

@@ -12,14 +12,23 @@ export class AuctionStakeService {
     private auctionItemRepository: AuctionItemRepository,
   ) {}
 
-  async create(data: CreateAuctionStakeDto, userId: string) {
-    const auction = await this.auctionItemRepository.findById(data.auctionId);
+  async create(
+    auctionItemId: string,
+    data: CreateAuctionStakeDto,
+    userId: string,
+  ) {
+    const auction = await this.auctionItemRepository.findById(auctionItemId);
+
+    if (auction.userId === userId) {
+      throw new BadRequestException('Owner can`t bet on his own auction');
+    }
+
     const biggestStake = await this.getBiggestStake(auction.id);
 
     if (
       !(await this.isBiggestPriceStake(
         data.price,
-        data.auctionId,
+        auctionItemId,
         Number(auction.minPriceStep),
       ))
     ) {
@@ -41,7 +50,7 @@ export class AuctionStakeService {
     });
 
     return this.auctionStakeRepository.create({
-      auctionItemId: data.auctionId,
+      auctionItemId,
       price: data.price,
       userId,
     });
@@ -66,5 +75,9 @@ export class AuctionStakeService {
         price: 'desc',
       },
     });
+  }
+
+  getAllByAuctionId(auctionItemId: string) {
+    return this.auctionStakeRepository.findManyByAuctionId(auctionItemId);
   }
 }

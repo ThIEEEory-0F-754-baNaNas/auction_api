@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AuctionStakeResponse } from './AuctionStakeResponse';
 import { ChatResponse } from './ChatResponse';
 
 export class AuctionItemResponse {
@@ -34,10 +33,7 @@ export class AuctionItemResponse {
   userId: string;
 }
 
-export class FullAuctionItemResponse extends AuctionItemResponse {
-  @ApiProperty({ type: [AuctionStakeResponse] })
-  auctionStakes: AuctionStakeResponse[];
-
+export class AuctionItemWithChatResponse extends AuctionItemResponse {
   @ApiProperty({ type: ChatResponse })
   chat: ChatResponse;
 }

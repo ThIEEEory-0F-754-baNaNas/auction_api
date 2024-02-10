@@ -1,7 +1,14 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateAuctionStakeDto } from '../dtos/CreateAuctionStakeDto';
 import { AuctionStakeService } from '../services/AuctionStakeService';
-import { CreateAuctionStakePipe } from '../pipes/CreateAuctionStakePipe';
 import { JWTGuard } from '../guards/JWTGuard';
 import {
   ApiBearerAuth,
@@ -9,12 +16,20 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuctionStakeResponse } from '../responses/AuctionStakeResponse';
+import {
+  AuctionStakeResponse,
+  AuctionStakeWithUserResponse,
+} from '../responses/AuctionStakeResponse';
+import { AuctionByIdPipe } from '../pipes/AuctionByIdPipe';
+import { AuctionStakesMapper } from '../mappers/AuctionStakesMapper';
 
 @ApiTags('AuctionStakes')
-@Controller('/auctionStakes')
+@Controller()
 export class AuctionStakeController {
-  constructor(private AuctionStakeService: AuctionStakeService) {}
+  constructor(
+    private readonly auctionStakeService: AuctionStakeService,
+    private readonly auctionStakesMapper: AuctionStakesMapper,
+  ) {}
 
   @ApiBearerAuth()
   @ApiOperation({
@@ -24,11 +39,27 @@ export class AuctionStakeController {
     type: AuctionStakeResponse,
   })
   @UseGuards(JWTGuard)
-  @Post()
+  @Post('/auctionItems/:auctionId/stakes')
   async create(
-    @Body(CreateAuctionStakePipe) body: CreateAuctionStakeDto,
+    @Param('auctionId', AuctionByIdPipe) auctionId: string,
+    @Body() body: CreateAuctionStakeDto,
     @Req() req,
   ): Promise<AuctionStakeResponse> {
-    return this.AuctionStakeService.create(body, req.user.id);
+    return this.auctionStakeService.create(auctionId, body, req.user.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get auction stakes by auction id',
+  })
+  @ApiOkResponse({
+    type: [AuctionStakeWithUserResponse],
+  })
+  @UseGuards(JWTGuard)
+  @Get('/auctionItems/:auctionId/stakes')
+  async getAll(@Param('auctionId', AuctionByIdPipe) auctionId: string) {
+    const auctionStakes =
+      await this.auctionStakeService.getAllByAuctionId(auctionId);
+    return this.auctionStakesMapper.getStakes(auctionStakes);
   }
 }

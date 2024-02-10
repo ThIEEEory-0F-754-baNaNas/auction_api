@@ -23,10 +23,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  AuctionItemResponse,
-  FullAuctionItemResponse,
-} from '../responses/AuctionItemResponse';
+import { AuctionItemResponse } from '../responses/AuctionItemResponse';
 import { QueryAllAuctionItemsDTO } from '../dtos/QueryAllAuctionItemsDTO';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageFileArrayPipe } from '../pipes/ImageFileArrayPipe';
@@ -75,7 +72,7 @@ export class AuctionItemController {
     summary: 'Get auction by id',
   })
   @ApiOkResponse({
-    type: FullAuctionItemResponse,
+    type: AuctionItemResponse,
   })
   @UseGuards(JWTGuard)
   @Get('/:auctionId')

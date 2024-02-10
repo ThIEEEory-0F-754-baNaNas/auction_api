@@ -12,9 +12,7 @@ export class AuctionItemMapper {
       createdAt: a.createdAt,
       startTime: a.startTime,
       endTime: a.endTime,
-      auctionStakes: a.auctionStakes,
       userId: a.userId,
-      chat: a.chat,
     };
   }
 }

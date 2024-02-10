@@ -25,4 +25,8 @@ export class ChatService {
       },
     });
   }
+
+  get(auctionItemId: string) {
+    return this.chatRepository.find({ auctionItemId });
+  }
 }

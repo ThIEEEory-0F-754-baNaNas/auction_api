@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AuctionStake, Chat } from '@prisma/client';
+import { AuctionStakeResponse } from './AuctionStakeResponse';
+import { ChatResponse } from './ChatResponse';
 
 export class AuctionItemResponse {
   @ApiProperty()
@@ -34,9 +35,9 @@ export class AuctionItemResponse {
 }
 
 export class FullAuctionItemResponse extends AuctionItemResponse {
-  @ApiProperty()
-  auctionStakes: AuctionStake[];
+  @ApiProperty({ type: [AuctionStakeResponse] })
+  auctionStakes: AuctionStakeResponse[];
 
-  @ApiProperty()
-  chat: Chat;
+  @ApiProperty({ type: ChatResponse })
+  chat: ChatResponse;
 }

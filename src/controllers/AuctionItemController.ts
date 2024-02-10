@@ -75,13 +75,11 @@ export class AuctionItemController {
     summary: 'Get auction by id',
   })
   @ApiOkResponse({
-    type: AuctionItemResponse,
+    type: FullAuctionItemResponse,
   })
   @UseGuards(JWTGuard)
   @Get('/:auctionId')
-  async get(
-    @Param('auctionId', AuctionByIdPipe) auctionId: string,
-  ): Promise<FullAuctionItemResponse> {
+  async get(@Param('auctionId', AuctionByIdPipe) auctionId: string) {
     const auction = await this.auctionItemService.getById(auctionId);
     return this.auctionItemMapper.getAuctionItem(auction);
   }

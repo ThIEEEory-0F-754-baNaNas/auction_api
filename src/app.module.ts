@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuctionItemModule } from './modules/AuctionItemModule';
 import { ChatModule } from './modules/ChatModule';
 import { AuctionStakeModule } from './modules/AuctionStakeModule';
+import { PhotoModule } from './modules/PhotoModule';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuctionStakeModule } from './modules/AuctionStakeModule';
     AuctionItemModule,
     ChatModule,
     AuctionStakeModule,
+    PhotoModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.development.env', '.env'],

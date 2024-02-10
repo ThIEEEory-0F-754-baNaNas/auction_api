@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { join, extname } from 'path';
+import { extname, join } from 'path';
 import { resolve } from 'url';
 import * as fs from 'fs';
 import * as process from 'process';
@@ -38,7 +38,7 @@ export class FileService {
 
     return resolve(
       process.env.BASE_URL,
-      join(directory, fileName + extname(file.originalname)),
+      join('photos', directory, fileName + extname(file.originalname)),
     );
   }
 
@@ -50,5 +50,10 @@ export class FileService {
   async deleteFile(path: string) {
     const filePath = join(__dirname, 'static', path);
     await fs.promises.unlink(filePath);
+  }
+
+  async getFile(fileName: string, directory: string) {
+    const filePath = join(__dirname, 'static', directory, fileName);
+    return fs.createReadStream(filePath);
   }
 }

@@ -37,7 +37,7 @@ model AuctionItem {
   startTime     DateTime?      @map("start_time")
   endTime       DateTime       @map("end_time")
   auctionStakes AuctionStake[]
-  user          User           @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String         @map("user_id")
   chat          Chat?
 
@@ -46,10 +46,10 @@ model AuctionItem {
 
 model AuctionStake {
   id            String      @id @default(uuid())
-  user          User        @relation(fields: [userId], references: [id])
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   createdAt     DateTime    @default(now()) @map("created_at")
-  auctionItem   AuctionItem @relation(fields: [auctionItemId], references: [id])
+  auctionItem   AuctionItem @relation(fields: [auctionItemId], references: [id], onDelete: Cascade)
   auctionItemId String      @map("auction_item_id")
   price         BigInt
 
@@ -58,7 +58,7 @@ model AuctionStake {
 
 model Chat {
   id            String      @id @default(uuid())
-  auctionItem   AuctionItem @relation(fields: [auctionItemId], references: [id])
+  auctionItem   AuctionItem @relation(fields: [auctionItemId], references: [id], onDelete: Cascade)
   auctionItemId String      @unique @map("auction_item_id")
   messages      Message[]
 
@@ -68,10 +68,10 @@ model Chat {
 model Message {
   id        String   @id @default(uuid())
   text      String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
-  chat      Chat?    @relation(fields: [chatId], references: [id])
+  chat      Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    String?  @map("chat_id")
 
   @@map("message")

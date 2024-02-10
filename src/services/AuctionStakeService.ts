@@ -49,6 +49,21 @@ export class AuctionStakeService {
       balance: Number(user.balance) - data.price,
     });
 
+    if (biggestStake) {
+      await this.auctionStakeRepository.update({
+        where: { id: biggestStake.id },
+        data: {
+          user: {
+            update: {
+              balance: {
+                increment: biggestStake.price,
+              },
+            },
+          },
+        },
+      });
+    }
+
     return this.auctionStakeRepository.create({
       auctionItemId,
       price: data.price,

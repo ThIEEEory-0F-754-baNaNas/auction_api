@@ -19,6 +19,10 @@ export class AuctionStakeRepository {
     return this.prismaService.auctionStake.findFirst(args);
   }
 
+  async update(args: Prisma.AuctionStakeUpdateArgs) {
+    return this.prismaService.auctionStake.update(args);
+  }
+
   findManyByAuctionId(auctionItemId: string) {
     return this.prismaService.auctionStake.findMany({
       where: { auctionItemId },

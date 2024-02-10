@@ -13,20 +13,21 @@ export class AuctionStakeService {
   ) {}
 
   async create(data: CreateAuctionStakeDto, userId: string) {
-    if (!(await this.isBiggestPriceStake(data.price, data.auctionId))) {
-      throw new BadRequestException('Larger price exists');
-    }
-
     const auction = await this.auctionItemRepository.findById(data.auctionId);
     const biggestStake = await this.getBiggestStake(auction.id);
 
     if (
-      !biggestStake &&
-      data.price - Number(auction.startPrice) < auction.minPriceStep
+      !(await this.isBiggestPriceStake(
+        data.price,
+        data.auctionId,
+        Number(auction.minPriceStep),
+      ))
     ) {
-      throw new BadRequestException(
-        `Min price for this auction is ${auction.startPrice + auction.minPriceStep}`,
-      );
+      throw new BadRequestException('Larger price exists');
+    }
+
+    if (!biggestStake && data.price < auction.startPrice) {
+      throw new BadRequestException('Price is too low');
     }
 
     const user = await this.userRepository.findById(userId);
@@ -46,10 +47,14 @@ export class AuctionStakeService {
     });
   }
 
-  async isBiggestPriceStake(price: number, auctionItemId: string) {
+  async isBiggestPriceStake(
+    price: number,
+    auctionItemId: string,
+    minStep: number,
+  ) {
     const stake = await this.getBiggestStake(auctionItemId);
 
-    return !stake?.price ? true : price > stake?.price;
+    return !stake?.price ? true : price - Number(stake?.price) >= minStep;
   }
 
   getBiggestStake(auctionItemId: string) {

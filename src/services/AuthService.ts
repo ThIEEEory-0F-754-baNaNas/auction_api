@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { FileService } from '../utils/files/FileService';
 
-const DEFAULT_AVATAR = 'https://imgur.com/a/ajhw7Jq';
+const DEFAULT_AVATAR = 'https://i.imgur.com/hblmt4u.jpeg';
 
 @Injectable()
 export class AuthService {

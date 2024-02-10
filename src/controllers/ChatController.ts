@@ -12,7 +12,7 @@ import {
 import { PostMessageResponse } from '../responses/PostMessageResponse';
 
 @ApiTags('Chat')
-@Controller('/chat')
+@Controller()
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
@@ -24,7 +24,7 @@ export class ChatController {
     type: PostMessageResponse,
   })
   @UseGuards(JWTGuard)
-  @Post('/:auctionId')
+  @Post('/:auctionId/chat')
   postMessage(
     @Param('auctionId', AuctionByIdPipe) auctionId: string,
     @Body() body: CreateMessageDTO,

@@ -1,7 +1,7 @@
 import {
   IsDate,
   IsNotEmpty,
-  IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -20,12 +20,12 @@ export class CreateAuctionItemDTO {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   startPrice: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   minPriceStep: number;
 
   @ApiProperty()

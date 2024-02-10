@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateAuctionItemDTO {
@@ -11,12 +11,4 @@ export class UpdateAuctionItemDTO {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @ApiPropertyOptional({
-    description: 'Array of images to add',
-  })
-  @IsArray()
-  @IsUrl({}, { each: true })
-  @IsOptional()
-  images?: string[];
 }

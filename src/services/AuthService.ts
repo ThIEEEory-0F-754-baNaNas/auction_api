@@ -6,6 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { FileService } from '../utils/files/FileService';
 
+const DEFAULT_AVATAR = 'https://imgur.com/a/ajhw7Jq';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -27,7 +29,9 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const avatar = await this.fileService.saveByHash(avatarFile, 'avatars');
+    const avatar = avatarFile
+      ? await this.fileService.saveByHash(avatarFile, 'avatars')
+      : DEFAULT_AVATAR;
 
     return this.userRepository.create({
       password: hashedPassword,

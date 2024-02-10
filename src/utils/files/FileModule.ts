@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { FileService } from './FileService';
-import { ImageFilePipe } from '../../pipes/ImageFilePipe';
+import { OptionalImageFilePipe } from '../../pipes/OptionalImageFilePipe';
 
 @Module({
-  providers: [FileService, ImageFilePipe],
-  exports: [FileService, ImageFilePipe],
+  providers: [FileService, OptionalImageFilePipe],
+  exports: [FileService, OptionalImageFilePipe],
 })
 export class FileModule {}

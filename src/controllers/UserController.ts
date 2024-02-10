@@ -6,9 +6,11 @@ import {
   Param,
   Patch,
   Post,
-  Req, UploadedFile,
-  UseGuards, UseInterceptors
-} from "@nestjs/common";
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from '../services/UserService';
 import { UserByIdPipe } from '../pipes/UserByIdPipe';
 import { UpdateUserDTO } from '../dtos/UpdateUserDTO';
@@ -23,8 +25,8 @@ import {
 } from '@nestjs/swagger';
 import { UserResponse } from '../responses/UserResponse';
 import { UserDepositDto } from '../dtos/UserDepositDto';
-import { FileInterceptor } from "@nestjs/platform-express";
-import { ImageFilePipe } from "../pipes/ImageFilePipe";
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageFilePipe } from '../pipes/ImageFilePipe';
 
 @ApiTags('User')
 @Controller('/user')
@@ -89,7 +91,7 @@ export class UserController {
   })
   @UseGuards(JWTGuard, AccessGuard)
   @UseInterceptors(FileInterceptor('avatarFile'))
-  @Patch('/:userId')
+  @Patch('/:userId/avatar')
   async updateAvatar(
     @Param('userId', UserByIdPipe) userId: string,
     @UploadedFile(ImageFilePipe) avatarFile: Express.Multer.File,

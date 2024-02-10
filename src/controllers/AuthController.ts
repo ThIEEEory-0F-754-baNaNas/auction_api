@@ -21,7 +21,7 @@ import {
 import { AuthLoginResponse } from '../responses/AuthLoginResponse';
 import { AuthSignupResponse } from '../responses/AuthSignupResponse';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ImageFilePipe } from '../pipes/ImageFilePipe';
+import { OptionalImageFilePipe } from '../pipes/OptionalImageFilePipe';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -40,7 +40,7 @@ export class AuthController {
   @Post('/signup')
   signup(
     @Body() body: CreateUserDTO,
-    @UploadedFile(ImageFilePipe) avatarFile: Express.Multer.File,
+    @UploadedFile(OptionalImageFilePipe) avatarFile?: Express.Multer.File,
   ): Promise<AuthSignupResponse> {
     return this.authService.createUser(body, avatarFile);
   }

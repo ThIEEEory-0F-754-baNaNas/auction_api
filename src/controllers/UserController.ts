@@ -44,11 +44,9 @@ export class UserController {
     type: UserResponse,
   })
   @UseGuards(JWTGuard, AccessGuard)
-  @Delete('/:userId')
-  async deleteUser(
-    @Param('userId', UserByIdPipe) userId: string,
-  ): Promise<UserResponse> {
-    return this.userService.deleteUser(userId);
+  @Delete()
+  async deleteUser(@Req() req): Promise<UserResponse> {
+    return this.userService.deleteUser(req.user.id);
   }
 
   @ApiBearerAuth()
@@ -74,12 +72,12 @@ export class UserController {
     type: UserResponse,
   })
   @UseGuards(JWTGuard, AccessGuard)
-  @Patch('/:userId')
+  @Patch()
   async updateUser(
-    @Param('userId', UserByIdPipe) userId: string,
+    @Req() req,
     @Body() body: UpdateUserDTO,
   ): Promise<UserResponse> {
-    return this.userService.updateUser(userId, body);
+    return this.userService.updateUser(req.user.id, body);
   }
 
   @ApiBearerAuth()
@@ -91,12 +89,12 @@ export class UserController {
   })
   @UseGuards(JWTGuard, AccessGuard)
   @UseInterceptors(FileInterceptor('avatarFile'))
-  @Patch('/:userId/avatar')
+  @Patch('/avatar')
   async updateAvatar(
-    @Param('userId', UserByIdPipe) userId: string,
+    @Req() req,
     @UploadedFile(ImageFilePipe) avatarFile: Express.Multer.File,
   ): Promise<UserResponse> {
-    return this.userService.updateAvatar(userId, avatarFile);
+    return this.userService.updateAvatar(req.user.id, avatarFile);
   }
 
   @ApiBearerAuth()

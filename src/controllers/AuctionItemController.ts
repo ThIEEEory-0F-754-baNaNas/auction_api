@@ -75,7 +75,6 @@ export class AuctionItemController {
   @ApiOkResponse({
     type: AuctionItemResponse,
   })
-  @UseGuards(JWTGuard)
   @Get('/:auctionId')
   async get(@Param('auctionId', AuctionByIdPipe) auctionId: string) {
     const auction = await this.auctionItemService.getById(auctionId);

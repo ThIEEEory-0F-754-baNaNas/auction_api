@@ -9,11 +9,12 @@ export enum SortQAAIParam {
 }
 
 export class QueryAllAuctionItemsDTO extends QueryAllDTO {
-  @IsEnum(SortQAAIParam)
   @ApiPropertyOptional({
     description: 'Sorting parameter',
     type: SortQAAIParam,
   })
+  @IsEnum(SortQAAIParam)
+  @IsOptional()
   sort?: SortQAAIParam;
 
   @ApiPropertyOptional({

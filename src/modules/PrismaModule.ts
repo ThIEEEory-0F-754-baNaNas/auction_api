@@ -4,6 +4,7 @@ import { UserRepository } from '../repositories/UserRepository';
 import { AuctionItemRepository } from '../repositories/AuctionItemRepository';
 import { ChatRepository } from '../repositories/ChatRepository';
 import { AuctionStakeRepository } from '../repositories/AuctionStakeRepository';
+import { MessageRepository } from '../repositories/MessageRepository';
 
 @Module({
   exports: [
@@ -12,6 +13,7 @@ import { AuctionStakeRepository } from '../repositories/AuctionStakeRepository';
     AuctionItemRepository,
     ChatRepository,
     AuctionStakeRepository,
+    MessageRepository,
   ],
   providers: [
     PrismaService,
@@ -19,6 +21,7 @@ import { AuctionStakeRepository } from '../repositories/AuctionStakeRepository';
     AuctionItemRepository,
     ChatRepository,
     AuctionStakeRepository,
+    MessageRepository,
   ],
 })
 export class PrismaModule {}

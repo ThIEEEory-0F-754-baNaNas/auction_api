@@ -71,6 +71,11 @@ export class AuctionItemService {
     });
   }
 
+  async getAllByUserId(query: QueryAllAuctionItemsDTO, userId: string) {
+    const allAuctions = await this.getAll(query);
+    return allAuctions.filter((a) => a.userId === userId);
+  }
+
   async create(
     data: CreateAuctionItemDTO,
     userId: string,

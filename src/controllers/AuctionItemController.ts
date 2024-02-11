@@ -29,6 +29,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageFileArrayPipe } from '../pipes/ImageFileArrayPipe';
 import { RemoveImagesDTO } from '../dtos/RemoveImagesDTO';
 import { AuctionItemMapper } from '../mappers/AuctionItemMapper';
+import { UserByIdPipe } from '../pipes/UserByIdPipe';
 
 @ApiTags('AuctionItem')
 @Controller('/auctionItems')
@@ -126,5 +127,19 @@ export class AuctionItemController {
   @Delete('/:auctionId')
   async delete(@Param('auctionId', AuctionByIdPipe) auctionId: string) {
     return this.auctionItemService.delete(auctionId);
+  }
+
+  @ApiOperation({
+    summary: 'Get all auctions',
+  })
+  @ApiOkResponse({
+    type: [AuctionItemResponse],
+  })
+  @Get('/user/:userId')
+  async getAllByUser(
+    @Query() query: QueryAllAuctionItemsDTO,
+    @Param('userId', UserByIdPipe) userId: string,
+  ) {
+    return this.auctionItemService.getAllByUserId(query, userId);
   }
 }

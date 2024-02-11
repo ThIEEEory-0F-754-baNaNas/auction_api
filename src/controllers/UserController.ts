@@ -71,7 +71,7 @@ export class UserController {
   @ApiOkResponse({
     type: UserResponse,
   })
-  @UseGuards(JWTGuard, AccessGuard)
+  @UseGuards(JWTGuard)
   @Patch()
   async updateUser(
     @Req() req,
@@ -87,7 +87,7 @@ export class UserController {
   @ApiOkResponse({
     type: UserResponse,
   })
-  @UseGuards(JWTGuard, AccessGuard)
+  @UseGuards(JWTGuard)
   @UseInterceptors(FileInterceptor('avatarFile'))
   @Patch('/avatar')
   async updateAvatar(

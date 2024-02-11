@@ -55,7 +55,6 @@ export class AuctionStakeController {
   @ApiOkResponse({
     type: [AuctionStakeWithUserResponse],
   })
-  @UseGuards(JWTGuard)
   @Get('/auctionItems/:auctionId/stakes')
   async getAll(@Param('auctionId', AuctionByIdPipe) auctionId: string) {
     const auctionStakes =

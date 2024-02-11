@@ -52,7 +52,7 @@ export class AuctionItemService {
         : {};
 
     const sort =
-      query.sort === SortQAAIParam.auctionStakes
+      query.sort === SortQAAIParam.AUCTION_STAKES
         ? {
             orderBy: {
               auctionStakes: {
@@ -60,7 +60,7 @@ export class AuctionItemService {
               },
             },
           }
-        : this.getSort(query, SortQAAIParam.endTime);
+        : this.getSort(query, SortQAAIParam.END_TIME);
 
     return this.auctionItemRepository.findMany({
       where: {

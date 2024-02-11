@@ -1,5 +1,6 @@
 import { IsIn, IsNumberString, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { SortQAAIParam } from './QueryAllAuctionItemsDTO';
 
 export class QueryAllDTO {
   @ApiPropertyOptional({
@@ -36,7 +37,7 @@ export class QueryAllDTO {
   @ApiPropertyOptional({
     description: 'Sorting parameter',
   })
-  sort?: string;
+  sort?: SortQAAIParam;
 
   @ApiPropertyOptional({
     description: 'Sorting order',
@@ -48,6 +49,6 @@ export class QueryAllDTO {
 }
 
 export class SortDTO {
-  sort?: string;
+  sort?: SortQAAIParam;
   order?: 'asc' | 'desc';
 }

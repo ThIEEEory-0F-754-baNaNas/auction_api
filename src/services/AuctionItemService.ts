@@ -52,7 +52,7 @@ export class AuctionItemService {
         : {};
 
     const sort =
-      query.sort === SortQAAIParam.AUCTION_STAKES
+      query.sort === SortQAAIParam.auctionStakes
         ? {
             orderBy: {
               auctionStakes: {
@@ -60,7 +60,7 @@ export class AuctionItemService {
               },
             },
           }
-        : this.getSort(query, SortQAAIParam.END_TIME);
+        : this.getSort(query, SortQAAIParam.endTime);
 
     return this.auctionItemRepository.findMany({
       where: {
@@ -69,6 +69,20 @@ export class AuctionItemService {
       ...pagination,
       ...sort,
     });
+  }
+
+  getSort({ sort, order = 'asc' }: SortDTO, standardField: SortQAAIParam) {
+    if (!sort)
+      return {
+        orderBy: {
+          [standardField]: order,
+        },
+      };
+    return {
+      orderBy: {
+        [sort]: order,
+      },
+    };
   }
 
   async getAllByUserId(query: QueryAllAuctionItemsDTO, userId: string) {
@@ -164,19 +178,5 @@ export class AuctionItemService {
 
   delete(id: string) {
     return this.auctionItemRepository.delete(id);
-  }
-
-  getSort({ sort, order = 'asc' }: SortDTO, standardField: string) {
-    if (!sort)
-      return {
-        orderBy: {
-          [standardField]: order,
-        },
-      };
-    return {
-      orderBy: {
-        [sort]: order,
-      },
-    };
   }
 }

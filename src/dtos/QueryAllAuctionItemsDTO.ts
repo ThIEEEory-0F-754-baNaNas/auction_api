@@ -3,9 +3,9 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBooleanString, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export enum SortQAAIParam {
-  'startPrice',
-  'endTime',
-  'auctionStakes',
+  START_PRICE = 'startPrice',
+  END_TIME = 'endTime',
+  AUCTION_STAKES = 'auctionStakes',
 }
 
 export class QueryAllAuctionItemsDTO extends QueryAllDTO {

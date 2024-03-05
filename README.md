@@ -4,8 +4,6 @@ This repository contains an api for hackaton test task of ThIEEEory-0F-754-baNaN
 - Skyba Marat
 - Maxym Siryk
 - Malanin Danylo
-## Link for website: 
-https://thieeeory-0f-754-bananas.github.io/Hackaton-auction/
 
 ## Installation
 
